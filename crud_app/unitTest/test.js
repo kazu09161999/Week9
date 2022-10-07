@@ -1,16 +1,47 @@
-// var assert = require("assert"); //link in assertion library
-// var app = require("../server/routes/router.js");
-// var http = require("http");
+var assert = require('assert');
+var app = require('../server.js');
 
-// describe("Tests for server", () => {
-//   describe("Test Case 1 #fnOne()", () => {
-//     it("should return -1 when the value is not present", () => {
-//       assert.equal([1, 2, 3].indexOf(4), -1);
-//     });
-//   });
-//   describe("Test Case #fnOne()", () => {
-//     it("should return 3 as the value is present", () => {
-//       assert.equal([1, 2, 3, 4, 5].indexOf(4), 3);
-//     });
-//   });
-// });
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+let should = chai.should();
+chai.use(chaiHttp);
+
+describe('Server test', function() {
+  // The function passed to before() is called before running the test cases.
+  before(function() {
+      console.log("before test");
+  });
+
+  // The function passed to after() is called after running the test cases.
+  after(function() {
+      console.log("after test");
+  });
+
+  describe('/api/users', () => {
+      it('it should GET all the products', (done) => {
+          chai.request(app)
+              .get('/api/users')
+              .end((err, res) => {
+                  res.should.have.status(200);
+                  res.body.should.be.a('array');
+                  // res.body.length.should.be.eql(2);
+                  done();
+              });
+      });
+  });
+
+  describe('/api/users', () => {
+      it('it should indert a doc', (done) => {
+          chai.request(app).post('/api/users').type('form').send({ 'name': 'Kaile', 'id': 3 })
+              .end((err, res) => {
+                  res.should.have.status(200);
+                  res.body.should.have.property('name');
+                  res.body.should.have.property('id');
+                  console.log(res.body);
+                  done();
+              });
+      });
+  });
+
+
+});
